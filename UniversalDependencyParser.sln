@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversalDependencyParser", "UniversalDependencyParser\UniversalDependencyParser.csproj", "{3E733500-200B-42B7-8042-E90D2BD2DFCC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{3A8DF065-B089-4A86-BE56-86D12A5F9A5E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3E733500-200B-42B7-8042-E90D2BD2DFCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E733500-200B-42B7-8042-E90D2BD2DFCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E733500-200B-42B7-8042-E90D2BD2DFCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E733500-200B-42B7-8042-E90D2BD2DFCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A8DF065-B089-4A86-BE56-86D12A5F9A5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A8DF065-B089-4A86-BE56-86D12A5F9A5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A8DF065-B089-4A86-BE56-86D12A5F9A5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A8DF065-B089-4A86-BE56-86D12A5F9A5E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
