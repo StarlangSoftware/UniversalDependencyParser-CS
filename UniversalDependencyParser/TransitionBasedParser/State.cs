@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using DependencyParser.Universal;
 
@@ -33,214 +32,191 @@ namespace UniversalDependencyParser.TransitionBasedParser
             {
                 var beforeLast = stack[stack.Count - 2].GetWord();
                 var index = stack[stack.Count - 1].GetToWord();
-                beforeLast.(new UniversalDependencyRelation(index, type.ToString().Replace("_", ":")));
-                stack.remove(stack.size() - 2);
-                relations.add(new StackRelation(beforeLast,
-                    new UniversalDependencyRelation(index, type.toString().replaceAll("_", ":"))));
+                beforeLast.SetRelation(new UniversalDependencyRelation(index, type.ToString().Replace("_", ":")));
+                stack.RemoveAt(stack.Count - 2);
+                relations.Add(new StackRelation(beforeLast,
+                    new UniversalDependencyRelation(index, type.ToString().Replace("_", ":"))));
             }
         }
 
-        public void applyRightArc(UniversalDependencyType type)
+        public void ApplyRightArc(UniversalDependencyType type)
         {
-            if (stack.size() > 1)
+            if (stack.Count > 1)
             {
-                UniversalDependencyTreeBankWord last = stack.get(stack.size() - 1).getWord();
-                int index = stack.get(stack.size() - 2).getToWord();
-                last.setRelation(new UniversalDependencyRelation(index, type.toString().replaceAll("_", ":")));
-                stack.pop();
-                relations.add(new StackRelation(last,
-                    new UniversalDependencyRelation(index, type.toString().replaceAll("_", ":"))));
+                var last = stack[stack.Count - 1].GetWord();
+                var index = stack[stack.Count - 2].GetToWord();
+                last.SetRelation(new UniversalDependencyRelation(index, type.ToString().Replace("_", ":")));
+                stack.RemoveAt(stack.Count - 1);
+                relations.Add(new StackRelation(last,
+                    new UniversalDependencyRelation(index, type.ToString().Replace("_", ":"))));
             }
         }
 
-        public void applyArcEagerLeftArc(UniversalDependencyType type)
+        public void ApplyArcEagerLeftArc(UniversalDependencyType type)
         {
-            if (stack.size() > 0 && wordList.size() > 0)
+            if (stack.Count > 0 && wordList.Count > 0)
             {
-                UniversalDependencyTreeBankWord lastElementOfStack = stack.peek().getWord();
-                int index = wordList.get(0).getToWord();
-                lastElementOfStack.setRelation(new UniversalDependencyRelation(index,
-                    type.toString().replaceAll("_", ":")));
-                stack.pop();
-                relations.add(new StackRelation(lastElementOfStack,
-                    new UniversalDependencyRelation(index, type.toString().replaceAll("_", ":"))));
+                var lastElementOfStack = stack[stack.Count - 1].GetWord();
+                var index = wordList[0].GetToWord();
+                lastElementOfStack.SetRelation(new UniversalDependencyRelation(index,
+                    type.ToString().Replace("_", ":")));
+                stack.RemoveAt(stack.Count - 1);
+                relations.Add(new StackRelation(lastElementOfStack,
+                    new UniversalDependencyRelation(index, type.ToString().Replace("_", ":"))));
             }
         }
 
-        public void applyArcEagerRightArc(UniversalDependencyType type)
+        public void ApplyArcEagerRightArc(UniversalDependencyType type)
         {
-            if (stack.size() > 0 && wordList.size() > 0)
+            if (stack.Count > 0 && wordList.Count > 0)
             {
-                UniversalDependencyTreeBankWord firstElementOfWordList = wordList.get(0).getWord();
-                int index = stack.peek().getToWord();
-                firstElementOfWordList.setRelation(new UniversalDependencyRelation(index,
-                    type.toString().replaceAll("_", ":")));
-                applyShift();
-                relations.add(new StackRelation(firstElementOfWordList,
-                    new UniversalDependencyRelation(index, type.toString().replaceAll("_", ":"))));
+                var firstElementOfWordList = wordList[0].GetWord();
+                var index = stack[stack.Count - 1].GetToWord();
+                firstElementOfWordList.SetRelation(new UniversalDependencyRelation(index,
+                    type.ToString().Replace("_", ":")));
+                ApplyShift();
+                relations.Add(new StackRelation(firstElementOfWordList,
+                    new UniversalDependencyRelation(index, type.ToString().Replace("_", ":"))));
             }
         }
 
-        public void applyReduce()
+        public void ApplyReduce()
         {
-            if (stack.size() > 0)
+            if (stack.Count > 0)
             {
-                stack.pop();
+                stack.RemoveAt(stack.Count - 1);
             }
         }
 
-        public void apply(Command command, UniversalDependencyType type, TransitionSystem transitionSystem)
+        public void Apply(Command command, UniversalDependencyType type, TransitionSystem transitionSystem)
         {
             switch (transitionSystem)
             {
-                case ARC_STANDARD:
+                case TransitionSystem.ARC_STANDARD:
                     switch (command)
                     {
-                        case LEFTARC:
-                            applyLeftArc(type);
+                        case Command.LEFTARC:
+                            ApplyLeftArc(type);
                             break;
-                        case RIGHTARC:
-                            applyRightArc(type);
+                        case Command.RIGHTARC:
+                            ApplyRightArc(type);
                             break;
-                        case SHIFT:
-                            applyShift();
-                            break;
-                        default:
+                        case Command.SHIFT:
+                            ApplyShift();
                             break;
                     }
 
                     break;
-                case ARC_EAGER:
+                case TransitionSystem.ARC_EAGER:
                     switch (command)
                     {
-                        case LEFTARC:
-                            applyArcEagerLeftArc(type);
+                        case Command.LEFTARC:
+                            ApplyArcEagerLeftArc(type);
                             break;
-                        case RIGHTARC:
-                            applyArcEagerRightArc(type);
+                        case Command.RIGHTARC:
+                            ApplyArcEagerRightArc(type);
                             break;
-                        case SHIFT:
-                            applyShift();
+                        case Command.SHIFT:
+                            ApplyShift();
                             break;
-                        case REDUCE:
-                            applyReduce();
-                            break;
-                        default:
+                        case Command.REDUCE:
+                            ApplyReduce();
                             break;
                     }
 
-                    break;
-                default:
                     break;
             }
         }
 
-        public int relationSize()
+        public int RelationSize()
         {
-            return relations.size();
+            return relations.Count;
         }
 
-        public int wordListSize()
+        public int WordListSize()
         {
-            return wordList.size();
+            return wordList.Count;
         }
 
-        public int stackSize()
+        public int StackSize()
         {
-            return stack.size();
+            return stack.Count;
         }
 
-        public UniversalDependencyTreeBankWord getStackWord(int index)
+        public UniversalDependencyTreeBankWord GetStackWord(int index)
         {
-            int size = stack.size() - 1;
+            var size = stack.Count - 1;
             if (size - index < 0)
             {
                 return null;
             }
 
-            return stack.get(size - index).getWord();
+            return stack[size - index].GetWord();
         }
 
-        public UniversalDependencyTreeBankWord getPeek()
+        public UniversalDependencyTreeBankWord GetPeek()
         {
-            if (stack.size() > 0)
+            if (stack.Count > 0)
             {
-                return stack.peek().getWord();
+                return stack[stack.Count - 1].GetWord();
             }
 
             return null;
         }
 
-        public UniversalDependencyTreeBankWord getWordListWord(int index)
+        public UniversalDependencyTreeBankWord GetWordListWord(int index)
         {
-            if (index > wordList.size() - 1)
+            if (index > wordList.Count - 1)
             {
                 return null;
             }
 
-            return wordList.get(index).getWord();
+            return wordList[index].GetWord();
         }
 
-        public StackRelation getRelation(int index)
+        public StackRelation GetRelation(int index)
         {
-            if (index < relations.size())
+            if (index < relations.Count)
             {
-                return relations.get(index);
+                return relations[index];
             }
 
             return null;
         }
 
-        @Override
-
-        public int hashCode()
+        public new int GetHashCode()
         {
-            return this.stack.hashCode() ^ this.wordList.hashCode() ^ this.relations.hashCode();
+            return stack.GetHashCode() ^ wordList.GetHashCode() ^ relations.GetHashCode();
         }
 
-        @Override
-
-        public boolean equals(Object obj)
+        public object Clone()
         {
-            if (!(obj instanceof State)) {
-                return false;
+            var o = new State(new List<StackWord>(), new List<StackWord>(), new List<StackRelation>());
+            foreach (var element in stack) {
+                if (element.GetWord().GetName() != "root")
+                {
+                    o.stack.Add(element.Clone());
+                }
+                else
+                {
+                    o.stack.Add(new StackWord(new UniversalDependencyTreeBankWord(), element.GetToWord()));
+                }
             }
-            State state = (State)obj;
-            return this.stack.equals(state.stack) && this.wordList.equals(state.wordList) &&
-                   this.relations.equals(state.relations);
-        }
 
-        @Override
-        public Object clone() throws CloneNotSupportedException { State o = new State(new Stack<>(), new ArrayList<>(
-            ), new ArrayList<>());
-        for (StackWord element : stack) {
-            if (!element.getWord().getName().equals("root"))
-            {
-                o.stack.add(element.clone());
+            foreach (var word in wordList) {
+                o.wordList.Add(word.Clone());
             }
-            else
-            {
-                o.stack.add(new StackWord(new UniversalDependencyTreeBankWord(), element.getToWord()));
+            foreach (var relation in relations) {
+                if (relation.GetWord().GetName() != "root")
+                {
+                    o.relations.Add(relation.Clone());
+                }
+                else
+                {
+                    o.relations.Add(new StackRelation(new UniversalDependencyTreeBankWord(), relation.GetRelation()));
+                }
             }
-        }
-
-    for (StackWord word :
-    wordList) {
-        o.wordList.add(word.clone());
-    }
-    for (StackRelation relation :
-    relations) {
-        if (!relation.getWord().getName().equals("root"))
-        {
-            o.relations.add(relation.clone());
-        }
-        else
-        {
-            o.relations.add(new StackRelation(new UniversalDependencyTreeBankWord(), relation.getRelation()));
+            return o;
         }
     }
-    return o;
-}
-
-}
 }

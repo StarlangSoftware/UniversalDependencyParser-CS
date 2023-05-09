@@ -15,7 +15,7 @@ namespace UniversalDependencyParser.TransitionBasedParser
             this.windowSize = windowSize;
         }
 
-        protected abstract Decision MakeDecision(State state);
+        public abstract Decision MakeDecision(State state);
         protected abstract List<Decision> ScoreDecisions(State state, TransitionSystem transitionSystem);
 
         protected string FindBestValidEagerClassInfo(Dictionary<string, double> probabilities, State state)
