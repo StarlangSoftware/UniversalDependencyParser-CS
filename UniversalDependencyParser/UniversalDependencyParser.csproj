@@ -9,4 +9,8 @@
       <PackageReference Include="NlpToolkit-DependencyParser" Version="1.0.19" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Parser" />
+    </ItemGroup>
+
 </Project>
