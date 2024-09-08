@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Classification.Instance;
 using DependencyParser.Universal;
 
-namespace UniversalDependencyParser.TransitionBasedParser
+namespace UniversalDependencyParser.Parser.TransitionBasedParser
 {
     public class ArcEagerTransitionParser : TransitionParser
     {
@@ -10,6 +10,12 @@ namespace UniversalDependencyParser.TransitionBasedParser
         {
         }
 
+        /// <summary>
+        /// Simulates the parsing process for a given sentence using the Arc Eager parsing algorithm.
+        /// </summary>
+        /// <param name="sentence">The sentence to be parsed.</param>
+        /// <param name="windowSize">The size of the window used for feature generation.</param>
+        /// <returns>An ArrayList of {@link Instance} objects representing the parsed actions.</returns>
         public override List<Instance> SimulateParse(UniversalDependencyTreeBankSentence sentence, int windowSize)
         {
             UniversalDependencyTreeBankWord top, first;
@@ -92,6 +98,12 @@ namespace UniversalDependencyParser.TransitionBasedParser
             return instanceList;
         }
 
+        /// <summary>
+        /// Performs dependency parsing on the given sentence using the provided oracle.
+        /// </summary>
+        /// <param name="universalDependencyTreeBankSentence">The sentence to be parsed.</param>
+        /// <param name="oracle">The oracle used to make parsing decisions.</param>
+        /// <returns>The parsed sentence with dependency relations established.</returns>
         public override UniversalDependencyTreeBankSentence DependencyParse(
             UniversalDependencyTreeBankSentence universalDependencyTreeBankSentence, Oracle oracle)
         {

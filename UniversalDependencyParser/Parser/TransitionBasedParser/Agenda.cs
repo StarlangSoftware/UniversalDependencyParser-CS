@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace UniversalDependencyParser.TransitionBasedParser
+namespace UniversalDependencyParser.Parser.TransitionBasedParser
 {
     public class Agenda
     {
@@ -13,11 +13,21 @@ namespace UniversalDependencyParser.TransitionBasedParser
             this.beamSize = beamSize;
         }
 
+        /// <summary>
+        /// Retrieves the set of states currently in the agenda.
+        /// </summary>
+        /// <returns>A set of states that are currently in the agenda.</returns>
         public Dictionary<State, double>.KeyCollection GetKeySet()
         {
             return agenda.Keys;
         }
 
+        /// <summary>
+        /// Updates the agenda with a new state if it is better than the worst state
+        /// currently in the agenda or if there is room in the agenda.
+        /// </summary>
+        /// <param name="oracle">The ScoringOracle used to score the state.</param>
+        /// <param name="current">The state to be added to the agenda.</param>
         public void UpdateAgenda(ScoringOracle oracle, State current)
         {
             if (agenda.ContainsKey(current))
@@ -49,6 +59,10 @@ namespace UniversalDependencyParser.TransitionBasedParser
             }
         }
 
+        /// <summary>
+        /// Retrieves the best state from the agenda based on the highest score.
+        /// </summary>
+        /// <returns>The state with the highest score in the agenda.</returns>
         public State Best()
         {
             State best = null;

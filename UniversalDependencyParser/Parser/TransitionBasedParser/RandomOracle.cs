@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Classification.Model;
 using DependencyParser.Universal;
 
-namespace UniversalDependencyParser.TransitionBasedParser
+namespace UniversalDependencyParser.Parser.TransitionBasedParser
 {
     public class RandomOracle : Oracle
     {
@@ -11,6 +11,11 @@ namespace UniversalDependencyParser.TransitionBasedParser
         {
         }
 
+        /// <summary>
+        /// Makes a random decision based on a uniform distribution over possible actions.
+        /// </summary>
+        /// <param name="state">The current state of the parser.</param>
+        /// <returns>A Decision object representing the randomly chosen action.</returns>
         public override Decision MakeDecision(State state)
         {
             var random = new Random();

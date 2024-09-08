@@ -3,10 +3,16 @@ using Classification.DataSet;
 using Classification.Instance;
 using DependencyParser.Universal;
 
-namespace UniversalDependencyParser.TransitionBasedParser
+namespace UniversalDependencyParser.Parser.TransitionBasedParser
 {
     public abstract class TransitionParser
     {
+        /// <summary>
+        /// Creates a new {@link UniversalDependencyTreeBankSentence} with the same words as the input sentence,
+        /// but with null heads, effectively cloning the sentence structure without dependencies.
+        /// </summary>
+        /// <param name="universalDependencyTreeBankSentence">the sentence to be cloned</param>
+        /// <returns>a new {@link UniversalDependencyTreeBankSentence} with copied words but no dependencies</returns>
         protected UniversalDependencyTreeBankSentence CreateResultSentence(
             UniversalDependencyTreeBankSentence universalDependencyTreeBankSentence)
         {
@@ -28,6 +34,12 @@ namespace UniversalDependencyParser.TransitionBasedParser
             wordList.RemoveAt(0);
         }
         
+        /// <summary>
+        /// Simulates parsing a corpus of sentences, returning a dataset of instances created by parsing each sentence.
+        /// </summary>
+        /// <param name="corpus">the corpus to be parsed</param>
+        /// <param name="windowSize">the size of the window used in parsing</param>
+        /// <returns>a {@link DataSet} containing instances from parsing each sentence in the corpus</returns>
         public DataSet SimulateParseOnCorpus(UniversalDependencyTreeBankCorpus corpus, int windowSize)
         {
             var dataSet = new DataSet();
@@ -40,11 +52,28 @@ namespace UniversalDependencyParser.TransitionBasedParser
             return dataSet;
         }
 
+        /// <summary>
+        /// Parses a single sentence and returns a list of instances that represent the parsing process.
+        /// </summary>
+        /// <param name="sentence">the sentence to be parsed</param>
+        /// <param name="windowSize">the size of the window used in parsing</param>
+        /// <returns>a list of {@link Instance} objects representing the parsing process</returns>
         public abstract List<Instance> SimulateParse(UniversalDependencyTreeBankSentence sentence, int windowSize);
 
+        /// <summary>
+        /// Parses a single sentence using a specified oracle and returns the parsed sentence with dependencies.
+        /// </summary>
+        /// <param name="universalDependencyTreeBankSentence">the sentence to be parsed</param>
+        /// <param name="oracle">the oracle used for guiding the parsing process</param>
+        /// <returns>a {@link UniversalDependencyTreeBankSentence} with dependencies parsed</returns>
         public abstract UniversalDependencyTreeBankSentence DependencyParse(
             UniversalDependencyTreeBankSentence universalDependencyTreeBankSentence, Oracle oracle);
 
+        /// <summary>
+        /// Checks if there are any states in the agenda that still have words to process or have more than one item in the stack.
+        /// </summary>
+        /// <param name="agenda">the agenda containing the states</param>
+        /// <returns>true if there are states to process, false otherwise</returns>
         private bool CheckStates(Agenda agenda)
         {
             foreach (var state in agenda.GetKeySet())
@@ -58,6 +87,11 @@ namespace UniversalDependencyParser.TransitionBasedParser
             return false;
         }
 
+        /// <summary>
+        /// Initializes the parsing state with a stack containing one empty {@link StackWord} and a word list containing all words in the sentence.
+        /// </summary>
+        /// <param name="sentence">the sentence to initialize the state with</param>
+        /// <returns>a {@link State} representing the starting point for parsing</returns>
         protected State InitialState(UniversalDependencyTreeBankSentence sentence)
         {
             var wordList = new List<StackWord>();
@@ -71,6 +105,12 @@ namespace UniversalDependencyParser.TransitionBasedParser
             return new State(stack, wordList, new List<StackRelation>());
         }
 
+        /// <summary>
+        /// Constructs possible parsing candidates based on the current state and transition system.
+        /// </summary>
+        /// <param name="transitionSystem">the transition system used (ARC_STANDARD or ARC_EAGER)</param>
+        /// <param name="state">the current parsing state</param>
+        /// <returns>a list of possible {@link Candidate} actions to be applied</returns>
         private List<Candidate> ConstructCandidates(TransitionSystem transitionSystem, State state)
         {
             if (state.StackSize() == 1 && state.WordListSize() == 0)
@@ -109,6 +149,14 @@ namespace UniversalDependencyParser.TransitionBasedParser
             return subsets;
         }
 
+        /// <summary>
+        /// Performs dependency parsing with beam search to find the best parse for a given sentence.
+        /// </summary>
+        /// <param name="oracle">the scoring oracle used for guiding the search</param>
+        /// <param name="beamSize">the size of the beam for beam search</param>
+        /// <param name="universalDependencyTreeBankSentence">the sentence to be parsed</param>
+        /// <param name="transitionSystem">the transition system used (ARC_STANDARD or ARC_EAGER)</param>
+        /// <returns>the best parsing state from the beam search</returns>
         public State DependencyParseWithBeamSearch(ScoringOracle oracle, int beamSize,
             UniversalDependencyTreeBankSentence universalDependencyTreeBankSentence,
             TransitionSystem transitionSystem)
@@ -135,6 +183,12 @@ namespace UniversalDependencyParser.TransitionBasedParser
             return agenda.Best();
         }
 
+        /// <summary>
+        /// Parses a corpus of sentences using the given oracle and returns a new corpus with the parsed sentences.
+        /// </summary>
+        /// <param name="universalDependencyTreeBankCorpus">the corpus to be parsed</param>
+        /// <param name="oracle">the oracle used for guiding the parsing process</param>
+        /// <returns>a {@link UniversalDependencyTreeBankCorpus} containing the parsed sentences</returns>
         public UniversalDependencyTreeBankCorpus DependencyParseCorpus(
             UniversalDependencyTreeBankCorpus universalDependencyTreeBankCorpus, Oracle oracle)
         {

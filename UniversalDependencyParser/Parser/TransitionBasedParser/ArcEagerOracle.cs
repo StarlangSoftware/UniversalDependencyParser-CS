@@ -3,7 +3,7 @@ using Classification.Instance;
 using Classification.Model;
 using DependencyParser.Universal;
 
-namespace UniversalDependencyParser.TransitionBasedParser
+namespace UniversalDependencyParser.Parser.TransitionBasedParser
 {
     public class ArcEagerOracle : Oracle
     {

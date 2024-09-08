@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using DependencyParser.Universal;
 
-namespace UniversalDependencyParser.TransitionBasedParser
+namespace UniversalDependencyParser.Parser.TransitionBasedParser
 {
     public class State
     {
@@ -9,6 +9,12 @@ namespace UniversalDependencyParser.TransitionBasedParser
         private List<StackWord> wordList;
         private List<StackRelation> relations;
 
+        /// <summary>
+        /// Constructs a State object with given stack, wordList, and relations.
+        /// </summary>
+        /// <param name="stack">The stack of words in the parser state.</param>
+        /// <param name="wordList">The list of words to be processed.</param>
+        /// <param name="relations">The relations established between words.</param>
         public State(List<StackWord> stack, List<StackWord> wordList, List<StackRelation> relations)
         {
             this.stack = stack;
@@ -16,6 +22,10 @@ namespace UniversalDependencyParser.TransitionBasedParser
             this.relations = relations;
         }
 
+        /// <summary>
+        /// Applies the SHIFT operation to the parser state.
+        /// Moves the first word from the wordList to the stack.
+        /// </summary>
         public void ApplyShift()
         {
             if (wordList.Count > 0)
@@ -26,6 +36,12 @@ namespace UniversalDependencyParser.TransitionBasedParser
             }
         }
 
+        /// <summary>
+        /// Applies the LEFTARC operation to the parser state.
+        /// Creates a relation from the second-to-top stack element to the top stack element
+        /// and then removes the second-to-top element from the stack.
+        /// </summary>
+        /// <param name="type">The type of the dependency relation.</param>
         public void ApplyLeftArc(UniversalDependencyType type)
         {
             if (stack.Count > 1)
@@ -39,6 +55,12 @@ namespace UniversalDependencyParser.TransitionBasedParser
             }
         }
 
+        /// <summary>
+        /// Applies the RIGHTARC operation to the parser state.
+        /// Creates a relation from the top stack element to the second-to-top stack element
+        /// and then removes the top element from the stack.
+        /// </summary>
+        /// <param name="type">The type of the dependency relation.</param>
         public void ApplyRightArc(UniversalDependencyType type)
         {
             if (stack.Count > 1)
@@ -52,6 +74,12 @@ namespace UniversalDependencyParser.TransitionBasedParser
             }
         }
 
+        /// <summary>
+        /// Applies the ARC_EAGER_LEFTARC operation to the parser state.
+        /// Creates a relation from the last element of the stack to the first element of the wordList
+        /// and then removes the top element from the stack.
+        /// </summary>
+        /// <param name="type"></param>
         public void ApplyArcEagerLeftArc(UniversalDependencyType type)
         {
             if (stack.Count > 0 && wordList.Count > 0)
@@ -66,6 +94,12 @@ namespace UniversalDependencyParser.TransitionBasedParser
             }
         }
 
+        /// <summary>
+        /// Applies the ARC_EAGER_RIGHTARC operation to the parser state.
+        /// Creates a relation from the first element of the wordList to the top element of the stack
+        /// and then performs a SHIFT operation.
+        /// </summary>
+        /// <param name="type">The type of the dependency relation.</param>
         public void ApplyArcEagerRightArc(UniversalDependencyType type)
         {
             if (stack.Count > 0 && wordList.Count > 0)
@@ -80,6 +114,10 @@ namespace UniversalDependencyParser.TransitionBasedParser
             }
         }
 
+        /// <summary>
+        /// Applies the REDUCE operation to the parser state.
+        /// Removes the top element from the stack.
+        /// </summary>
         public void ApplyReduce()
         {
             if (stack.Count > 0)
@@ -88,6 +126,12 @@ namespace UniversalDependencyParser.TransitionBasedParser
             }
         }
 
+        /// <summary>
+        /// Applies a specific command based on the transition system.
+        /// </summary>
+        /// <param name="command">The command to be applied (e.g., SHIFT, LEFTARC, RIGHTARC, REDUCE).</param>
+        /// <param name="type">The type of dependency relation, relevant for ARC operations.</param>
+        /// <param name="transitionSystem">The transition system (e.g., ARC_STANDARD, ARC_EAGER) that determines which command to apply.</param>
         public void Apply(Command command, UniversalDependencyType type, TransitionSystem transitionSystem)
         {
             switch (transitionSystem)
@@ -128,21 +172,38 @@ namespace UniversalDependencyParser.TransitionBasedParser
             }
         }
 
+        /// <summary>
+        /// Returns the number of relations established in the current state.
+        /// </summary>
+        /// <returns>The size of the relations list.</returns>
         public int RelationSize()
         {
             return relations.Count;
         }
 
+        /// <summary>
+        /// Returns the number of words remaining in the wordList.
+        /// </summary>
+        /// <returns>The size of the wordList.</returns>
         public int WordListSize()
         {
             return wordList.Count;
         }
 
+        /// <summary>
+        /// Returns the number of words currently in the stack.
+        /// </summary>
+        /// <returns>The size of the stack.</returns>
         public int StackSize()
         {
             return stack.Count;
         }
 
+        /// <summary>
+        /// Retrieves a specific word from the stack based on its position.
+        /// </summary>
+        /// <param name="index">The position of the word in the stack.</param>
+        /// <returns>The word at the specified position, or null if the index is out of bounds.</returns>
         public UniversalDependencyTreeBankWord GetStackWord(int index)
         {
             var size = stack.Count - 1;
@@ -154,6 +215,10 @@ namespace UniversalDependencyParser.TransitionBasedParser
             return stack[size - index].GetWord();
         }
 
+        /// <summary>
+        /// Retrieves the top word from the stack.
+        /// </summary>
+        /// <returns>The top word of the stack, or null if the stack is empty.</returns>
         public UniversalDependencyTreeBankWord GetPeek()
         {
             if (stack.Count > 0)
@@ -164,6 +229,11 @@ namespace UniversalDependencyParser.TransitionBasedParser
             return null;
         }
 
+        /// <summary>
+        /// Retrieves a specific word from the wordList based on its position.
+        /// </summary>
+        /// <param name="index">The position of the word in the wordList.</param>
+        /// <returns>The word at the specified position, or null if the index is out of bounds.</returns>
         public UniversalDependencyTreeBankWord GetWordListWord(int index)
         {
             if (index > wordList.Count - 1)
@@ -174,6 +244,11 @@ namespace UniversalDependencyParser.TransitionBasedParser
             return wordList[index].GetWord();
         }
 
+        /// <summary>
+        /// Retrieves a specific relation based on its index.
+        /// </summary>
+        /// <param name="index">The position of the relation in the relations list.</param>
+        /// <returns>The relation at the specified position, or null if the index is out of bounds.</returns>
         public StackRelation GetRelation(int index)
         {
             if (index < relations.Count)

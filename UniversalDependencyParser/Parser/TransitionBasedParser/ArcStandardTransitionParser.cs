@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Classification.Instance;
 using DependencyParser.Universal;
 
-namespace UniversalDependencyParser.TransitionBasedParser
+namespace UniversalDependencyParser.Parser.TransitionBasedParser
 {
     public class ArcStandardTransitionParser : TransitionParser
     {
@@ -10,6 +10,12 @@ namespace UniversalDependencyParser.TransitionBasedParser
         {
         }
 
+        /// <summary>
+        /// Checks if there are more relations with a specified ID in the list of words.
+        /// </summary>
+        /// <param name="wordList">The list of words to check.</param>
+        /// <param name="id">The ID to check for.</param>
+        /// <returns>True if no more relations with the specified ID are found; false otherwise.</returns>
         private bool CheckForMoreRelation(List<StackWord> wordList, int id)
         {
             foreach (var word in wordList)
@@ -23,6 +29,12 @@ namespace UniversalDependencyParser.TransitionBasedParser
             return true;
         }
 
+        /// <summary>
+        /// Simulates the parsing process for a given sentence using the Arc Standard parsing algorithm.
+        /// </summary>
+        /// <param name="sentence">The sentence to be parsed.</param>
+        /// <param name="windowSize">The size of the window used for feature generation.</param>
+        /// <returns>An ArrayList of {@link Instance} objects representing the parsed actions.</returns>
         public override List<Instance> SimulateParse(UniversalDependencyTreeBankSentence sentence, int windowSize)
         {
             UniversalDependencyTreeBankWord top, beforeTop;
@@ -97,6 +109,12 @@ namespace UniversalDependencyParser.TransitionBasedParser
             return instanceList;
         }
 
+        /// <summary>
+        /// Performs dependency parsing on the given sentence using the provided oracle.
+        /// </summary>
+        /// <param name="universalDependencyTreeBankSentence">The sentence to be parsed.</param>
+        /// <param name="oracle">The oracle used to make parsing decisions.</param>
+        /// <returns>The parsed sentence with dependency relations established.</returns>
         public override UniversalDependencyTreeBankSentence DependencyParse(
             UniversalDependencyTreeBankSentence universalDependencyTreeBankSentence, Oracle oracle)
         {
